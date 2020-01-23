@@ -6,7 +6,7 @@ const UserModel = require('../users/userModel');
 
 router.post('/register', (req, res) => {
     let user = req.body;
-    const hash = bcrypt.hashSync(user.password, 15);
+    const hash = bcrypt.hashSync(user.password, 10);
     user.password = hash;
 
     UserModel.add(user)
@@ -24,6 +24,7 @@ router.post('/login', (req, res) => {
     UserModel.findBy({username})
         .first()
         .then(user => {
+            const department = user.department
             if(user && bcrypt.compareSync(password, user.password)) {
                 const token = signToken(user)
                 res.status(200).json({
@@ -40,14 +41,10 @@ router.post('/login', (req, res) => {
 })
 
 function signToken(user) {
-    UserModel.findBy(user.username)
-    .first()
-    .then(user => {
-        const department = user.department
-    })
+
     const payload = {
       username: user.username,
-      department: department
+      department: user.department
     };
     const secret = process.env.JWT_SECRET
   

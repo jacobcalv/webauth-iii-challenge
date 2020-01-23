@@ -4,7 +4,7 @@ const Users = require('./userModel.js');
 const restrictedRoute = require('../auth/tokenMiddleware.js');
 const checkDepartment = require('../auth/checkDepartment')
 
-router.get('/', restrictedRoute,  (req, res) => {
+router.get('/', restrictedRoute, checkDepartment("admin"), (req, res) => {
   Users.find()
     .then(users => {
       res.json(users);
